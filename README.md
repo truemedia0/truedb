@@ -39,6 +39,11 @@ Add new data to database:
 database.addData('key=value') # add new value
 ```
 
+Add new multiple-data to database:
+```
+database.addData('key=value1,value2,value3') # multiple values
+```
+
 Get(search) data from database:
 ```
 database.get('key') # returned "value"
