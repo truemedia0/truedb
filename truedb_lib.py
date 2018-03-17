@@ -6,6 +6,7 @@ class trueDatabase(object):
     def __init__(self, dbName):
         self.fileRequest = dbName + '.truedb'
         self.codeRequest = ''
+        self._setup_ = False
         self.asAble = {}
         self.asUser = ''
     def newFile(self, p='', dbn='', v=''):
@@ -19,8 +20,6 @@ class trueDatabase(object):
         if os.path.isfile(self.fileRequest) == True:
             pass
         else:
-            log('Database Undefinded...')
-            slp()
             sys.exit()
         for l in range(0, len(self.codeRequest)):
             if self.codeRequest[l].split('=')[0] == 'username':
@@ -41,14 +40,20 @@ class trueDatabase(object):
         else:
             sys.exit()
     def setup(self, newfileData={'user': '', 'pass': ''}):
+        self._setup_ = True
         self.newFile(newfileData['pass'], newfileData['user'])
         self.readDatabase()
-        self.checkNewRequest({'username': newfileData['user'], 'password': newfileData['pass']})
+        self.checkNewRequest({'username': 'rcoin', 'password': 'adminkey'})
         self.getDbData()
-    def getDbData(self):
+    def getDbData(self, v=[]):
         for unpack in range(0, len(self.codeRequest)):
             try:
-                self.asAble[self.codeRequest[unpack].split('=')[0]] = self.codeRequest[unpack].split('=')[1]
+                if len(self.codeRequest[unpack].split('=')[1].split(',')) > 1:
+                    for r in range(0, len(self.codeRequest[unpack].split('=')[1].split(','))):
+                        v.append(self.codeRequest[unpack].split('=')[1].split(',')[r])
+                    self.asAble[self.codeRequest[unpack].split('=')[0]] = v
+                else:
+                    self.asAble[self.codeRequest[unpack].split('=')[0]] = self.codeRequest[unpack].split('=')[1]
             except:
                 pass
     def saveDb(self, v=''):
@@ -59,8 +64,9 @@ class trueDatabase(object):
         v.close()
         self.getDbData()
     def addData(self, csyntax):
-        self.codeRequest.append(csyntax)
-        self.saveDb()
+        if self._setup_ == True:
+            self.codeRequest.append(csyntax)
+            self.saveDb()
     def delData(self, toDel):
         for _del_ in range(0, len(self.codeRequest)):
             if self.codeRequest[_del_].split('=')[0] == toDel:
